@@ -24,14 +24,12 @@ class LTI_Message_Launch {
      * @param Cache     $cache      Instance of the Cache interface used to loading and storing launches. If non is provided launch data will be store in $_SESSION.
      * @param Cookie    $cookie     Instance of the Cookie interface used to set and read cookies. Will default to using $_COOKIE and setcookie.
      */
-    function __construct(Database $database, Cache $cache = null, Cookie $cookie = null) {
+    function __construct(Database $database, Cache $cache, Cookie $cookie = null) {
         $this->db = $database;
 
         $this->launch_id = uniqid("lti1p3_launch_", true);
 
-        if ($cache === null) {
-            $cache = new Cache();
-        }
+        
         $this->cache = $cache;
 
         if ($cookie === null) {
