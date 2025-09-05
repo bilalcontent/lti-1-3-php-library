@@ -101,13 +101,18 @@ class LTI_OIDC_Login {
             throw new OIDC_Exception("Could not find issuer", 1);
         }
 
+       // Validate Client id.
+        if (empty($request['client_id'])) {
+            throw new OIDC_Exception("Could not find Client id", 1);
+        }
+
         // Validate Login Hint.
         if (empty($request['login_hint'])) {
             throw new OIDC_Exception("Could not find login hint", 1);
         }
 
         // Fetch Registration Details.
-        $registration = $this->db->find_registration_by_issuer($request['iss']);
+        $registration = $this->db->find_registration_by_issuer_and_client_id($request['iss'], $request['client_id']);
 
         // Check we got something.
         if (empty($registration)) {
