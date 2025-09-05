@@ -277,7 +277,7 @@ class LTI_Message_Launch {
 
     private function validate_registration() {
         // Find registration.
-        $this->registration = $this->db->find_registration_by_issuer($this->jwt['body']['iss']);
+        $this->registration = $this->db->find_registration_by_issuer_and_client_id($this->jwt['body']['iss'], $this->jwt['body']['aud']);
 
         if (empty($this->registration)) {
             throw new LTI_Exception("Registration not found.", 1);
