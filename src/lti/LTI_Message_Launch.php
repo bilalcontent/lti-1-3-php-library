@@ -204,6 +204,15 @@ class LTI_Message_Launch {
         return $this->launch_id;
     }
 
+    private function parseJwk(array $jwk, string $defaultAlg = 'RS256')
+	{
+    	if (!isset($jwk['alg'])) {
+        	$jwk['alg'] = $defaultAlg;
+    	}
+
+    	return JWK::parseKey($jwk);
+	}
+
     private function get_public_key() {
         $key_set_url = $this->registration->get_key_set_url();
 
@@ -219,7 +228,7 @@ class LTI_Message_Launch {
         foreach ($public_key_set['keys'] as $key) {
             if ($key['kid'] == $this->jwt['header']['kid']) {
                 try {
-                  $parsed_key = JWK::parseKey($key);
+                  $parsed_key = $this->parseJwk($key);
                   return openssl_pkey_get_details($parsed_key->getKeyMaterial());
                 } catch(\Exception $e) {
                     return false;
@@ -230,6 +239,7 @@ class LTI_Message_Launch {
         // Could not find public key with a matching kid and alg.
         throw new LTI_Exception("Unable to find public key", 1);
     }
+
 
     private function cache_launch_data() {
         $this->cache->cache_launch_data($this->launch_id, $this->jwt['body']);
@@ -372,3 +382,4 @@ class LTI_Message_Launch {
     }
 }
 ?>
+
