@@ -248,7 +248,7 @@ class LTI_Message_Launch {
 
     private function validate_state() {
         // Check State for OIDC.
-        if ($this->cookie->get_cookie('lti1p3_' . $this->request['state']) !== $this->request['state']) {
+        if ($this->cookie->get_cookie($this->request['state']) !== $this->request['state']) {
             // Error if state doesn't match
             throw new LTI_Exception("State not found", 1);
         }
@@ -382,4 +382,5 @@ class LTI_Message_Launch {
     }
 }
 ?>
+
 
