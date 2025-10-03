@@ -6,7 +6,7 @@ class Cookie {
         $state_data = \Illuminate\Support\Facades\DB::Table('lti1p3_login_state')
         ->where('state', $state)
         ->where('expires_at', '>', now())->first();
-        return $state_data;
+        return $state_data->state;
     }
 
     public function set_cookie($name, $value, $exp = 3600, $options = []) {
@@ -19,5 +19,3 @@ class Cookie {
     }
 }
 ?>
-
-
