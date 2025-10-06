@@ -62,7 +62,7 @@ class LTI_OIDC_Login {
         // Generate State.
         // Set cookie (short lived)
         $state = str_replace('.', '_', uniqid('state-', true));
-        $this->cookie->set_cookie("lti1p3_$state", $state, 60);
+        $this->cookie->set_cookie("lti1p3_$state", $state, 3600);
 
         // Generate Nonce.
         $nonce = uniqid('nonce-', true);
@@ -123,3 +123,4 @@ class LTI_OIDC_Login {
         return $registration;
     }
 }
+
