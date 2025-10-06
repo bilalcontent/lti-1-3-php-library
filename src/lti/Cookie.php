@@ -6,6 +6,10 @@ class Cookie {
         $state_data = \Illuminate\Support\Facades\DB::Table('lti1p3_login_state')
         ->where('state', $state)
         ->where('expires_at', '>', now())->first();
+        if(! $state_data) {
+            return false;
+        }
+        
         return $state_data->state;
     }
 
@@ -19,3 +23,4 @@ class Cookie {
     }
 }
 ?>
+
