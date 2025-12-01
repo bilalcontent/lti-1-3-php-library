@@ -283,7 +283,7 @@ class LTI_Message_Launch {
 
     private function validate_nonce() {
         if (!$this->cache->check_nonce($this->jwt['body']['nonce'])) {
-            //throw new LTI_Exception("Invalid Nonce");
+            throw new LTI_Exception("Invalid Nonce");
         }
         return $this;
     }
@@ -384,6 +384,7 @@ class LTI_Message_Launch {
     }
 }
 ?>
+
 
 
 
