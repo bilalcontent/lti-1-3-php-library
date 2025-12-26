@@ -27,7 +27,7 @@ class LTI_Message_Launch {
     function __construct(Database $database, Cache $cache, Cookie $cookie = null) {
         $this->db = $database;
 
-        $this->launch_id = uniqid("lti1p3_launch_", true);
+        $this->launch_id = md5(uniqid("_", true));
 
         
         $this->cache = $cache;
@@ -59,6 +59,11 @@ class LTI_Message_Launch {
         $new = new LTI_Message_Launch($database, $cache, null);
         $new->launch_id = $launch_id;
         $new->jwt = [ 'body' => $new->cache->get_launch_data($launch_id) ];
+
+        if(! $new->jwt['body']) {
+            throw new LTI_Exception("Launch not found.", 1);
+        }
+
         return $new->validate_registration();
     }
 

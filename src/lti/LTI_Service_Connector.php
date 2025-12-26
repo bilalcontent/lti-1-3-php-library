@@ -53,6 +53,11 @@ class LTI_Service_Connector {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $resp = curl_exec($ch);
+
+        if (curl_errno($ch)){
+            throw new LTI_Exception(curl_error($ch), 1);
+        }
+
         $token_data = json_decode($resp, true);
         curl_close ($ch);
 
@@ -76,9 +81,11 @@ class LTI_Service_Connector {
         }
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = curl_exec($ch);
+
         if (curl_errno($ch)){
-            echo 'Request Error:' . curl_error($ch);
+            throw new LTI_Exception(curl_error($ch), 1);
         }
+
         $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         curl_close ($ch);
 
