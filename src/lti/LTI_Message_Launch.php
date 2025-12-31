@@ -389,8 +389,3 @@ class LTI_Message_Launch {
     }
 }
 ?>
-
-
-
-
-

@@ -123,4 +123,3 @@ class LTI_OIDC_Login {
         return $registration;
     }
 }
-
