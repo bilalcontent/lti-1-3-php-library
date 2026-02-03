@@ -20,10 +20,14 @@ class Deep_Link_Message_Validator implements Message_Validator {
             throw new LTI_Exception('Missing Deep Linking Settings');
         }
         $deep_link_settings = $jwt_body['https://purl.imsglobal.org/spec/lti-dl/claim/deep_linking_settings'];
+        $required_types = ['ltiResourceLink', 'ltiAssetProcessor'];
         if (empty($deep_link_settings['deep_link_return_url'])) {
             throw new LTI_Exception('Missing Deep Linking Return URL');
         }
-        if (empty($deep_link_settings['accept_types']) || !in_array('ltiResourceLink', $deep_link_settings['accept_types'])) {
+        if (
+            empty($deep_link_settings['accept_types']) ||
+            empty(array_intersect($required_types, $deep_link_settings['accept_types']))
+        ) {
             throw new LTI_Exception('Must support resource link placement types');
         }
         if (empty($deep_link_settings['accept_presentation_document_targets'])) {

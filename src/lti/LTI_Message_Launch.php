@@ -153,6 +153,26 @@ class LTI_Message_Launch {
     }
 
     /**
+     * Returns whether or not the current launch can use the Platform Notification service.
+     *
+     * @return boolean  Returns a boolean indicating the availability of assignments and grades.
+     */
+    public function has_pns() {
+        return !empty($this->jwt['body']['https://purl.imsglobal.org/spec/lti/claim/platformnotificationservice']);
+    }
+
+    /**
+     * Fetches an instance of the platform notification service for the current launch.
+     *
+     * @return LTI_Platform_Notification_Service An instance of the Platform notification service that can be used to make calls within the scope of the current launch.
+     */
+    public function get_pns() {
+        return new LTI_Platform_Notification_Service(
+            new LTI_Service_Connector($this->registration),
+            $this->jwt['body']['https://purl.imsglobal.org/spec/lti/claim/platformnotificationservice']);
+    }
+
+    /**
      * Fetches a deep link that can be used to construct a deep linking response.
      *
      * @return LTI_Deep_Link An instance of a deep link to construct a deep linking response for the current launch.
@@ -171,6 +191,18 @@ class LTI_Message_Launch {
      */
     public function is_deep_link_launch() {
         return $this->jwt['body']['https://purl.imsglobal.org/spec/lti/claim/message_type'] === 'LtiDeepLinkingRequest';
+    }
+
+    /**
+     * Returns whether or not the current launch is a deep linking and Asset processor launch.
+     *
+     * @return boolean  Returns true if the current launch is a deep linking launch.
+     */
+    public function is_deep_link_asset_processor_link() {
+        return (
+            $this->jwt['body']['https://purl.imsglobal.org/spec/lti/claim/message_type'] === 'LtiDeepLinkingRequest' &&
+            in_array('ltiAssetProcessor', $this->jwt['body']['https://purl.imsglobal.org/spec/lti-dl/claim/deep_linking_settings']['accept_types'])
+        );
     }
 
     /**

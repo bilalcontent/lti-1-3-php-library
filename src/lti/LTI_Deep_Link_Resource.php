@@ -5,7 +5,9 @@ class LTI_Deep_Link_Resource {
 
     private $type = 'ltiResourceLink';
     private $title;
+    private $text;
     private $url;
+    private $report_url;
     private $lineitem;
     private $custom_params = [];
     private $target = 'iframe';
@@ -32,12 +34,30 @@ class LTI_Deep_Link_Resource {
         return $this;
     }
 
+    public function get_text() {
+        return $this->text;
+    }
+
+    public function set_text($value) {
+        $this->text = $value;
+        return $this;
+    }
+
     public function get_url() {
         return $this->url;
     }
 
     public function set_url($value) {
         $this->url = $value;
+        return $this;
+    }
+
+    public function get_report_url() {
+        return $this->report_url;
+    }
+
+    public function set_report_url($value) {
+        $this->report_url = $value;
         return $this;
     }
 
@@ -72,6 +92,7 @@ class LTI_Deep_Link_Resource {
         $resource = [
             "type" => $this->type,
             "title" => $this->title,
+            "text" => $this->text,
             "url" => $this->url,
             "presentation" => [
                 "documentTarget" => $this->target,
@@ -82,6 +103,14 @@ class LTI_Deep_Link_Resource {
             $resource["lineItem"] = [
                 "scoreMaximum" => $this->lineitem->get_score_maximum(),
                 "label" => $this->lineitem->get_label(),
+            ];
+        }
+        if($this->type == "ltiAssetProcessor") {
+            $resource["report"] = [
+                "supportedTypes" => ['originality'],
+                "url" => $this->get_report_url(),
+                "released" => true,
+                "indicator" => true,
             ];
         }
         return $resource;
