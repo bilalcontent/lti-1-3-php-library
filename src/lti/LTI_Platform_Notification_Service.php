@@ -20,7 +20,7 @@ class LTI_Platform_Notification_Service {
 
         $body = json_encode([
             'notice_type' => 'LtiAssetProcessorSubmissionNotice',
-            'handler_url' => env('ASSET_PROCESSOR_PNS_URL'),
+            'handler_url' => route('asset-processor-pns'),
         ]);
 
         return $this->service_connector->make_service_request(
