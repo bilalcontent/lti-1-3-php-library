@@ -206,6 +206,15 @@ class LTI_Message_Launch {
     }
 
     /**
+     * Returns whether or not the current launch is an Eula link.
+     *
+     * @return boolean  Returns true if the current launch is an Eula link launch.
+     */
+    public function is_eula_link() {
+        return $this->jwt['body']['https://purl.imsglobal.org/spec/lti/claim/message_type'] === 'LtiEulaRequest';
+    }
+
+    /**
      * Returns whether or not the current launch is a submission review launch.
      *
      * @return boolean  Returns true if the current launch is a submission review launch.
