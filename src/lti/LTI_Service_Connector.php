@@ -14,10 +14,11 @@ class LTI_Service_Connector {
         $this->registration = $registration;
     }
 
-    public function get_access_token($scopes) {
+    public function get_access_token($scopes, $url = null) {
 
         // Don't fetch the same key more than once.
         sort($scopes);
+        $scope_readable_key = implode('|', $scopes);
         $scope_key = md5(implode('|', $scopes));
         if (isset($this->access_tokens[$scope_key])) {
             return $this->access_tokens[$scope_key];
@@ -60,14 +61,14 @@ class LTI_Service_Connector {
 
         $token_data = json_decode($resp, true);
         curl_close ($ch);
-
+        clock('Access token api call', array('scope_readable_key' => $scope_readable_key, 'access_token' => $token_data['access_token'], 'url' => $url));
         return $this->access_tokens[$scope_key] = $token_data['access_token'];
     }
 
     public function make_service_request($scopes, $method, $url, $body = null, $content_type = 'application/json', $accept = 'application/json') {
         $ch = curl_init();
         $headers = [
-            'Authorization: Bearer ' . $this->get_access_token($scopes),
+            'Authorization: Bearer ' . $this->get_access_token($scopes, $url),
             'Accept:' . $accept,
         ];
         curl_setopt($ch, CURLOPT_URL, $url);
