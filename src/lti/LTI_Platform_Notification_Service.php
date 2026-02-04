@@ -20,7 +20,7 @@ class LTI_Platform_Notification_Service {
 
         $body = json_encode([
             'notice_type' => 'LtiAssetProcessorSubmissionNotice',
-            'handler_url' => route('asset-processor-pns'),
+            'handler' => route('asset-processor-pns'),
         ]);
 
         clock('register_handler Log', $body);
@@ -28,7 +28,7 @@ class LTI_Platform_Notification_Service {
 
         return $this->service_connector->make_service_request(
             $this->service_data['scope'],
-            'POST',
+            'PUT',
             $url,
             strval($body),
             'application/vnd.ims.lis.v1.score+json'
