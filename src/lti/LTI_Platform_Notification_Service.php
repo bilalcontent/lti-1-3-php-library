@@ -23,7 +23,7 @@ class LTI_Platform_Notification_Service {
             'handler_url' => route('asset-processor-pns'),
         ]);
 
-        clock('register_handler Log', $body);
+        clock('register_handler Log', $body, $url, urldecode($url), $this->service_data['scope']);
 
         return $this->service_connector->make_service_request(
             $this->service_data['scope'],
