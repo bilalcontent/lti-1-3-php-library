@@ -173,6 +173,15 @@ class LTI_Message_Launch {
     }
 
     /**
+     * Fetches an instance of the  service connector for the current launch.
+     *
+     * @return LTI_Service_Connector An instance of the  service connector that can be used to make calls within the scope of the current launch.
+     */
+    public function get_service_connector() {
+        return new LTI_Service_Connector($this->registration);
+    }
+
+    /**
      * Fetches a deep link that can be used to construct a deep linking response.
      *
      * @return LTI_Deep_Link An instance of a deep link to construct a deep linking response for the current launch.
