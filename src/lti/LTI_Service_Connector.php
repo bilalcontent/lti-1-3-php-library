@@ -88,13 +88,26 @@ class LTI_Service_Connector {
         }
 
         $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $content_type_resp = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+
         curl_close ($ch);
 
-        $resp_headers = substr($response, 0, $header_size);
-        $resp_body = substr($response, $header_size);
+        $resp_headers_raw = substr($response, 0, $header_size);
+        $resp_body_raw = substr($response, $header_size);
+
+        $resp_headers = array_filter(explode("\r\n", $resp_headers_raw));
+
+        if ($content_type_resp && str_contains($content_type_resp, 'application/json')) {
+            $parsed_body = json_decode($resp_body_raw, true);
+        } else {
+            $parsed_body = $resp_body_raw;
+        }
+
         return [
-            'headers' => array_filter(explode("\r\n", $resp_headers)),
-            'body' => json_decode($resp_body, true),
+            'headers' => $resp_headers,
+            'content_type' => $content_type_resp,
+            'body' => $parsed_body,
+            'raw_body' => $resp_body_raw,
         ];
     }
 }
