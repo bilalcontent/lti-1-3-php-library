@@ -11,7 +11,7 @@ class LTI_Platform_Notification_Service {
         $this->service_data = $service_data;
     }
 
-    public function register_handler() {
+    public function register_handler($handler_url) {
         if (!in_array("https://purl.imsglobal.org/spec/lti/scope/noticehandlers", $this->service_data['scope'])) {
             throw new LTI_Exception('Missing required scope', 1);
         }
@@ -20,11 +20,9 @@ class LTI_Platform_Notification_Service {
 
         $body = json_encode([
             'notice_type' => 'LtiAssetProcessorSubmissionNotice',
-            'handler' => route('asset-processor-pns'),
+            'handler' => $handler_url,
         ]);
 
-        clock('register_handler Log', $body);
-        clock('register_handler ', ['$url' => $url, 'urldecode' => urldecode($url), 'scope' => $this->service_data['scope']]);
 
         return $this->service_connector->make_service_request(
             $this->service_data['scope'],
