@@ -70,6 +70,14 @@ class LTI_Launch {
         return new LTI_Service_Connector($this->registration);
     }
 
+    /**
+     * Get Registration for the current launch.
+     *
+     */
+    public function get_registration() {
+        return $this->registration;
+    }
+
 
     /**
      * Fetches the decoded body of the JWT used in the current launch.
