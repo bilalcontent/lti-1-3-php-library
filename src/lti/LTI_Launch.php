@@ -56,7 +56,7 @@ class LTI_Launch {
 
         return $this->validate_jwt_format($jwt)
             ->validate_registration()
-            ->validate_jwt_signature()
+            ->validate_jwt_signature($jwt)
             ->validate_deployment();
     }
 
@@ -165,15 +165,15 @@ class LTI_Launch {
         return $this;
     }
 
-    private function validate_jwt_signature() {
+    private function validate_jwt_signature($jwt) {
         // Fetch public key.
         $public_key = $this->get_public_key();
 
     
         // Validate JWT signature
         try {
-            JWT::decode($this->request['id_token'], new Key($public_key['key'], 'RS256'));
-            // JWT::decode($this->request['id_token'], $public_key['key'], 'RS256');
+            JWT::decode($jwt, new Key($public_key['key'], 'RS256'));
+            // JWT::decode($jwt, $public_key['key'], 'RS256');
         } catch(\Exception $e) {
             // Error validating signature.
             throw new LTI_Exception("Invalid signature on id_token", 1);
