@@ -60,7 +60,25 @@ class LTI_Launch {
             ->validate_deployment();
     }
 
+    /**
+     * Returns whether or not the current launch can use the Platform Notification service.
+     *
+     * @return boolean  Returns a boolean indicating the availability of assignments and grades.
+     */
+    public function has_pns($service_name = 'platformnotificationservice') {
+        return !empty($this->jwt['body']['https://purl.imsglobal.org/spec/lti/claim/'.$service_name]);
+    }
 
+    /**
+     * Fetches an instance of the platform notification service for the current launch.
+     *
+     * @return LTI_Platform_Notification_Service An instance of the Platform notification service that can be used to make calls within the scope of the current launch.
+     */
+    public function get_pns($service_data = 'https://purl.imsglobal.org/spec/lti/claim/platformnotificationservice') {
+        return new LTI_Platform_Notification_Service(
+            new LTI_Service_Connector($this->registration),
+            $this->jwt['body'][$service_data]);
+    }
     /**
      * Fetches an instance of the  service connector for the current launch.
      *
