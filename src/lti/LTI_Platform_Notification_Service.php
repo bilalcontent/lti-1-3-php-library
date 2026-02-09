@@ -61,6 +61,7 @@ class LTI_Platform_Notification_Service {
         $report_url = $this->service_data['report_url'];
 
         $body = json_encode($asset_report_payload, JSON_UNESCAPED_SLASHES);
+        Log::info($body);
 
         return $this->service_connector->make_service_request(
             $this->service_data['scope'],

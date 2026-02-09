@@ -2,6 +2,7 @@
 namespace IMSGlobal\LTI;
 
 use Firebase\JWT\JWT;
+use Illuminate\Support\Facades\Log;
 
 class LTI_Service_Connector {
 
@@ -62,6 +63,7 @@ class LTI_Service_Connector {
         $token_data = json_decode($resp, true);
         curl_close ($ch);
         clock('Access token api call', array('scope_readable_key' => $scope_readable_key, 'access_token' => $token_data['access_token'], 'url' => $url));
+        Log::info(array('scope_readable_key' => $scope_readable_key, 'access_token' => $token_data['access_token'], 'url' => $url));
         return $this->access_tokens[$scope_key] = $token_data['access_token'];
     }
 
