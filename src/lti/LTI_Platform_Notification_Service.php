@@ -68,6 +68,7 @@ class LTI_Platform_Notification_Service {
             'POST',
             $report_url,
             $body,
+            'application/vnd.ims.lti.v1.assetreport+json'
         );
     }
 
