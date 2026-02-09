@@ -11,6 +11,7 @@ class LTI_Launch {
 
     private $db;
     private $cache;
+    private $request;
     private $cookie;
     private $jwt;
     private $registration;

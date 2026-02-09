@@ -49,30 +49,25 @@ class LTI_Platform_Notification_Service {
         );
     }
 
-    public function send_d2l_asset_processor_report($asset_report_payload) {
-        if (!in_array("https://purl.imsglobal.org/spec/lti/scope/report", $this->service_data['scope'])) {
+    public function send_d2l_asset_processor_report($asset_report_payload)
+    {
+        if (!in_array(
+            'https://purl.imsglobal.org/spec/lti/scope/report',
+            $this->service_data['scope']
+        )) {
             throw new LTI_Exception('Missing required scope', 1);
         }
 
         $report_url = $this->service_data['report_url'];
 
-        $body = json_encode($asset_report_payload);
+        $body = json_encode($asset_report_payload, JSON_UNESCAPED_SLASHES);
 
-        try {
-            $response = $this->service_connector->make_service_request(
-                $this->service_data['scope'],
-                'POST',
-                $report_url,
-                strval($body),
-                'application/vnd.ims.lis.v1.score+json'
-            );
-        } catch (\Throwable $throwable) {
-            Log::info('send_d2l_asset_processor_report error handling');
-            Log::info($throwable->getMessage());
-            return false;
-        }
-
-        return $response;
+        return $this->service_connector->make_service_request(
+            $this->service_data['scope'],
+            'POST',
+            $report_url,
+            $body,
+        );
     }
 
 
