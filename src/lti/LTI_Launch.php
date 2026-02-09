@@ -11,7 +11,6 @@ class LTI_Launch {
 
     private $db;
     private $cache;
-    private $request;
     private $cookie;
     private $jwt;
     private $registration;
@@ -22,20 +21,41 @@ class LTI_Launch {
      *
      * @param Database  $database   Instance of the database interface used for looking up registrations and deployments.
      * @param Cache     $cache      Instance of the Cache interface used to loading and storing launches. If non is provided launch data will be store in $_SESSION.
-     * @param Cookie    $cookie     Instance of the Cookie interface used to set and read cookies. Will default to using $_COOKIE and setcookie.
      */
-    function __construct(Database $database) {
+    function __construct(Database $database,  Cache $cache) {
         $this->db = $database;
 
         $this->launch_id = md5(uniqid("_", true));
-
+        $this->cache = $cache;
     }
 
     /**
      * Static function to allow for method chaining without having to assign to a variable first.
      */
-    public static function new(Database $database ) {
-        return new LTI_Launch($database);
+    public static function new(Database $database, Cache $cache = null ) {
+        return new LTI_Launch($database, $cache);
+    }
+
+    /**
+     * Load an LTI_Launch from a Cache using a launch id.
+     *
+     * @param string    $launch_id  The launch id of the LTI_Message_Launch object that is being pulled from the cache.
+     * @param Database  $database   Instance of the database interface used for looking up registrations and deployments.
+     * @param Cache     $cache      Instance of the Cache interface used to loading and storing launches. If non is provided launch data will be store in $_SESSION.
+     *
+     * @throws LTI_Exception        Will throw an LTI_Exception if validation fails or launch cannot be found.
+     * @return LTI_Launch   A populated and validated LTI_Message_Launch.
+     */
+    public static function from_cache($launch_id, Database $database, Cache $cache = null) {
+        $new = new LTI_Launch($database, $cache);
+        $new->launch_id = $launch_id;
+        $new->jwt = [ 'body' => $new->cache->get_launch_data($launch_id) ];
+
+        if(! $new->jwt['body']) {
+            throw new LTI_Exception("Launch not found.", 1);
+        }
+
+        return $new->validate_registration();
     }
 
 
@@ -57,7 +77,8 @@ class LTI_Launch {
         return $this->validate_jwt_format($jwt)
             ->validate_registration()
             ->validate_jwt_signature($jwt)
-            ->validate_deployment();
+            ->validate_deployment()
+            ->cache_launch_data();
     }
 
     /**
@@ -217,6 +238,11 @@ class LTI_Launch {
             throw new LTI_Exception("Unable to find deployment", 1);
         }
 
+        return $this;
+    }
+
+    private function cache_launch_data() {
+        $this->cache->cache_launch_data($this->launch_id, $this->jwt['body']);
         return $this;
     }
 
