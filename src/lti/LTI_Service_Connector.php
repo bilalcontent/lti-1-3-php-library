@@ -99,11 +99,7 @@ class LTI_Service_Connector {
 
         $resp_headers = array_filter(explode("\r\n", $resp_headers_raw));
 
-        if ($content_type_resp && str_contains($content_type_resp, 'application/json')) {
-            $parsed_body = json_decode($resp_body_raw, true);
-        } else {
-            $parsed_body = $resp_body_raw;
-        }
+        $parsed_body = json_decode($resp_body_raw, true);
 
         return [
             'headers' => $resp_headers,

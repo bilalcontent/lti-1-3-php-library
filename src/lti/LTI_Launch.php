@@ -40,12 +40,12 @@ class LTI_Launch {
     /**
      * Load an LTI_Launch from a Cache using a launch id.
      *
-     * @param string    $launch_id  The launch id of the LTI_Message_Launch object that is being pulled from the cache.
-     * @param Database  $database   Instance of the database interface used for looking up registrations and deployments.
-     * @param Cache     $cache      Instance of the Cache interface used to loading and storing launches. If non is provided launch data will be store in $_SESSION.
+     * @param string     $launch_id  The launch id of the LTI_Message_Launch object that is being pulled from the cache.
+     * @param Database   $database   Instance of the database interface used for looking up registrations and deployments.
+     * @param Cache|null $cache      Instance of the Cache interface used to loading and storing launches. If non is provided launch data will be store in $_SESSION.
      *
-     * @throws LTI_Exception        Will throw an LTI_Exception if validation fails or launch cannot be found.
-     * @return LTI_Launch   A populated and validated LTI_Message_Launch.
+     * @throws LTI_Exception Will throw an LTI_Exception if validation fails or launch cannot be found.
+     * @return LTI_Launch    A populated and validated LTI_Launch.
      */
     public static function from_cache($launch_id, Database $database, Cache $cache = null) {
         $new = new LTI_Launch($database, $cache);
@@ -63,10 +63,10 @@ class LTI_Launch {
     /**
      * Validates all aspects of an incoming LTI message launch and caches the launch if successful.
      *
-     * @param array|string  $request    An array of post request parameters. If not set will default to $_POST.
-     *
-     * @throws LTI_Exception        Will throw an LTI_Exception if validation fails.
+     * @param array|null $request An array of post request parameters. If not set will default to $_POST.
+     * @param null $jwt
      * @return LTI_Launch   Will return $this if validation is successful.
+     * @throws LTI_Exception Will throw an LTI_Exception if validation fails.
      */
     public function validate(array $request = null, $jwt = null) {
 
@@ -83,7 +83,7 @@ class LTI_Launch {
     }
 
     /**
-     * Returns whether or not the current launch can use the Platform Notification service.
+     * Returns whether the current launch can use the Platform Notification service.
      *
      * @return boolean  Returns a boolean indicating the availability of assignments and grades.
      */
